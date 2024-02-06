@@ -47,7 +47,7 @@ jobs:
           git merge --no-commit origin/main-apache || true
           git reset origin/main ${{vars.MAIN_SYNC_WORKFLOW_EXCLUDE_PATHS}}
           git commit -m "Merge main-apache and exclude white-listed changes from the merge"
-          echo "excluded_paths=$(git ls-files -mo | sed -z 's/\n/<br \/>/g')" >> $GITHUB_OUTPUT
+          echo "excluded_files=$(git ls-files -mo | sed -z 's/\n/<br \/>/g')" >> $GITHUB_OUTPUT
 
       - name: Check for changes
         id: check_changes
@@ -68,15 +68,13 @@ jobs:
         if: steps.check_changes.outputs.is_changed
         run: |
             runUrl="${{github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            commitUrl="${{ github.server_url }}/${{ github.repository }}/commit/$( git rev-parse HEAD )"
-            if [[ -n "${{ steps.merge.outputs.excluded_paths }}" ]]; then
-              excludedPaths="${{ steps.merge.outputs.excluded_paths }}"
-              lastCommitLink="<br />[View exclude paths commit](${commitUrl})"
+            if [[ -n "${{ steps.merge.outputs.excluded_files }}" ]]; then
+              excludedFiles="${{ steps.merge.outputs.excluded_files }}"
             else
-              excludedPaths="No files have been excluded<br />"
+              excludedFiles="No files have been excluded<br />"
             fi
             prTitle="Automatic PR: Sync main with main-apache (${{steps.generate_pr_id.outputs.pr_id}})"
-            prBody="This pull request has been created by a GitHub workflow and synchronizes the main branch with main-apache branch.<br /><br /><b>Excluded paths:</b><br />${excludedPaths}<br />[View Action](${runUrl})${lastCommitLink}"
+            prBody="This pull request has been created by a GitHub workflow and synchronizes the main branch with main-apache branch.<br /><br /><b>Excluded files:</b><br />${excludedFiles}<br />[View Action](${runUrl})"
             if [[ -n "${{ vars.MAIN_SYNC_WORKFLOW_PR_REVIEWERS }}" ]]; then
                 reviewersOption="--reviewer ${{vars.MAIN_SYNC_WORKFLOW_PR_REVIEWERS}}"
             fi
