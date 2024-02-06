@@ -41,16 +41,13 @@ jobs:
       - name: Create the PR branch
         run: git checkout -b sync-main-pr-${{ steps.generate_pr_id.outputs.pr_id }}
 
-      - name: Merge main-apache branch
-        run: git merge --no-edit origin/main-apache
-
-      - name: Exclude white-listed paths from the merge
-        id: exclude_paths
+      - name: Merge main-apache branch excluding white-listed paths
+        id: merge
         run: |
-            git reset origin/main ${{vars.MAIN_SYNC_WORKFLOW_EXCLUDE_PATHS}}
-            git checkout -- ${{vars.MAIN_SYNC_WORKFLOW_EXCLUDE_PATHS}}
-            echo "excluded_paths=$(git diff --name-only --cached --raw | sed -z "s/\n/<br \/>/g")" >> $GITHUB_OUTPUT
-            git commit -m "Exclude white-listed changes from the merge" || true
+          git merge --no-commit origin/main-apache
+          git reset origin/main ${{vars.MAIN_SYNC_WORKFLOW_EXCLUDE_PATHS}}
+          git commit -m "Merge main-apache and exclude white-listed changes from the merge"
+          echo "excluded_paths=$(git ls-files -mo | sed -z 's/\n/<br \/>/g')" >> $GITHUB_OUTPUT
 
       - name: Check for changes
         id: check_changes
@@ -72,8 +69,8 @@ jobs:
         run: |
             runUrl="${{github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             commitUrl="${{ github.server_url }}/${{ github.repository }}/commit/$( git rev-parse HEAD )"
-            if [[ -n "${{ steps.exclude_paths.outputs.excluded_paths }}" ]]; then
-              excludedPaths="${{ steps.exclude_paths.outputs.excluded_paths }}"
+            if [[ -n "${{ steps.merge.outputs.excluded_paths }}" ]]; then
+              excludedPaths="${{ steps.merge.outputs.excluded_paths }}"
               lastCommitLink="<br />[View exclude paths commit](${commitUrl})"
             else
               excludedPaths="No files have been excluded<br />"
@@ -84,3 +81,4 @@ jobs:
                 reviewersOption="--reviewer ${{vars.MAIN_SYNC_WORKFLOW_PR_REVIEWERS}}"
             fi
             gh pr create --title "${prTitle}" --body "${prBody}" --base main $reviewersOption
+
