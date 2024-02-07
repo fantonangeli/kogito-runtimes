@@ -6,12 +6,13 @@ env:
   GITHUB_TOKEN: ${{ secrets.APACHE_SYNC_MIDSTREAM_TOKEN }}
 
 on:
-  # schedule:
-    #- cron: "0 0 * * *" # every day at midnight
+  workflow_run:
+    workflows: [Sync main-apache branch with upstream/main]
+    types: [completed]
   workflow_dispatch:
 
 jobs:
-  sync-main:
+  on-success:
     name: Sync main with main-apache branch
     runs-on: ubuntu-latest
  
