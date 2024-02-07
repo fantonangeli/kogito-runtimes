@@ -45,7 +45,7 @@ jobs:
       - name: Merge main-apache branch excluding white-listed paths
         id: merge
         run: |
-          git merge --no-commit origin/main-apache || true
+          git merge --no-commit origin/main-apache
           git reset origin/main ${{vars.MAIN_SYNC_WORKFLOW_EXCLUDE_PATHS}}
           git commit -m "Merge main-apache and exclude white-listed changes from the merge" || true
           echo "excluded_files=$(git ls-files -mo | sed -z 's/\n/<br \/>/g')" >> $GITHUB_OUTPUT
