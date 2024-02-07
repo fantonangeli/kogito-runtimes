@@ -61,11 +61,11 @@ jobs:
           fi
 
       - name: Push changes
-        if: steps.check_changes.outputs.is_changed
+        if: steps.check_changes.outputs.is_changed == 'true'
         run: git push origin sync-main-pr-${{ steps.generate_pr_id.outputs.pr_id }}
 
       - name: Create the PR
-        if: steps.check_changes.outputs.is_changed
+        if: steps.check_changes.outputs.is_changed == 'true'
         run: |
             runUrl="${{github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             if [[ -n "${{ steps.merge.outputs.excluded_files }}" ]]; then
