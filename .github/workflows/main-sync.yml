@@ -47,7 +47,11 @@ jobs:
         run: |
           git merge --no-commit origin/main-apache || true
           git reset origin/main ${{vars.MAIN_SYNC_WORKFLOW_EXCLUDE_PATHS}}
-          git commit -m "Merge main-apache and exclude white-listed changes from the merge" || true
+          if git diff --cached --quiet; then
+              echo "No changes staged for commit."
+          else
+              git commit -m "Merge main-apache and exclude white-listed changes from the merge"
+          fi
           echo "excluded_files=$(git ls-files -mo | sed -z 's/\n/<br \/>/g')" >> $GITHUB_OUTPUT
 
       - name: Check for changes
