@@ -6,9 +6,8 @@ env:
   GITHUB_TOKEN: ${{ secrets.APACHE_SYNC_MIDSTREAM_TOKEN }}
 
 on:
-  workflow_run:
-    workflows: [Sync main-apache branch with upstream/main]
-    types: [completed]
+  schedule:
+    - cron:  '0 1 * * 0' 
   workflow_dispatch:
 
 jobs:
