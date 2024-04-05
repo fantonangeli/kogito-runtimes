@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  sync-main:
+  on-success:
     #TODO: uncomment this
     #if: github.repository_owner == 'kiegroup'
     name: Sync main with main-apache branch
@@ -82,7 +82,7 @@ jobs:
             fi
             prTitle="Automatic PR: Sync main with main-apache (${{steps.generate_pr_id.outputs.pr_id}})"
             prBody="This pull request has been created by a GitHub workflow to synchronize the main branch with main-apache branch.<br /><br />\
-                <b>:warning:Important:warning:</b><br />Please don't merge using squash, not to loose commits references.<br /><br />\
+                <b>:warning:Important:warning:</b><br />Please don't merge using squash, not to loose git history.<br /><br />\
                 <b>Excluded files:</b><br />${excludedFiles}<br />\
                 [View Action](${runUrl})"
             if [[ -n "${{ vars.MAIN_SYNC_WORKFLOW_PR_REVIEWERS }}" ]]; then
