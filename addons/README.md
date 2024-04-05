@@ -9,7 +9,7 @@ The following table lists all the add-ons, independent of runtime implementation
 
 | Add-On Description     | Artifact ID                          | Since               |
 |------------------------|--------------------------------------|---------------------|
-| Human Task Predictions | kogito-addons-human-task-prediction-api | 0.7.0            |
+| Human Task Predictions | jbpm-addons-human-task-prediction-api | 0.7.0            |
 
 ### Quarkus Implementation
 
@@ -50,8 +50,8 @@ your `pom.xml` file:
 
 <dependencies>
   <dependency>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-process-management</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-quarkus-process-management</artifactId>
     <version>${kogito.version}</version>
   </dependency>
 </dependencies>
