@@ -15,6 +15,7 @@ jobs:
   on-success:
     #TODO: uncomment this
     #if: github.repository_owner == 'kiegroup'
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Sync main with main-apache branch
     runs-on: ubuntu-latest
  
